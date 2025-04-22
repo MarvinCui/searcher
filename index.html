@@ -70,7 +70,7 @@
         }
     </script>
 
-    <!-- 自动聚焦Google搜索 -->
+    <!-- URL检测和自动聚焦Google搜索 -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // 无条件聚焦Google搜索框
@@ -82,6 +82,31 @@
                     // 清空输入框（确保不显示之前的搜索内容）
                     googleInput.value = '';
                 }, 100);
+            }
+
+            // URL检测逻辑
+            const googleForm = document.querySelector('.Google');
+            if (googleForm) {
+                googleForm.addEventListener('submit', function(e) {
+                    const input = googleInput.value.trim();
+
+                    // —— 更完善的 URL 检测正则 ——
+                    const urlPattern = /\b(?:(?:https?|ftp):\/\/|www\.)?(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}(?::\d{1,5})?(?:\/[^\s]*)?\b/;
+
+                    if (urlPattern.test(input)) {
+                        e.preventDefault();  // 阻止默认的 Google 搜索提交
+
+                        let url = input;
+                        // 如果输入中没有 http:// 或 https://，一律加上 https://
+                        if (!/^https?:\/\//i.test(input)) {
+                            url = 'https://' + input;
+                        }
+
+                        // 这样就会跳到 https://borancui.site 而不是相对路径
+                        window.location.href = url;
+                    }
+                    // 其他情况仍然走 Google 搜索
+                });
             }
         });
     </script>
