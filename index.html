@@ -49,6 +49,43 @@
     <link rel="dns-prefetch" href="//chatgpt.com">
     <link rel="dns-prefetch" href="//zh.wikipedia.org">
 
+    <!-- 缓存控制提示 -->
+    <meta http-equiv="Cache-Control" content="max-age=86400, public">
+    <meta http-equiv="Expires" content="86400">
+
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="/searcher/favicon/favicon.svg" as="image" type="image/svg+xml">
+
+    <!-- Service Worker注册 -->
+    <script>
+        // 注册Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/searcher/sw.js').then(registration => {
+                    console.log('ServiceWorker注册成功，范围：', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker注册失败：', err);
+                });
+            });
+        }
+    </script>
+
+    <!-- 自动聚焦Google搜索 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 无条件聚焦Google搜索框
+            const googleInput = document.querySelector('.Google input[type="search"]');
+            if (googleInput) {
+                // 使用setTimeout确保在页面完全加载后聚焦
+                setTimeout(() => {
+                    googleInput.focus();
+                    // 清空输入框（确保不显示之前的搜索内容）
+                    googleInput.value = '';
+                }, 100);
+            }
+        });
+    </script>
+
     <style>
         /* Contemporary minimalist flat design styles */
         :root {
